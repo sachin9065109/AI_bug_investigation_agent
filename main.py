@@ -7,4 +7,4 @@ user_input = st.text_input("Enter your bug description:")
 
 if st.button("Analyze"):
     st.write("Analyzing...")
-    st.write("Result yahan aayega")
+    st.write("The result will appear here.")
