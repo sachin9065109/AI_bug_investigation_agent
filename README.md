@@ -12,6 +12,4 @@ Hackathon Project using Coral + FastAPI + RoBERTa
 
 ## Run
 
-```bash
-uvicorn main:app --reload
-```
+https://aibuginvestigationagent-hheesye3oetfmlfzxmubkh.streamlit.app/
