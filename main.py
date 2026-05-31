@@ -1,19 +1,14 @@
 import streamlit as st
-import sys
-import os
-
-# Path set karein taaki 'agent' folder mil jaye
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-
-from agent.agent import analyze_bug_with_ai
+# Baaki imports jo aapke project mein hain
+# from agent import ... 
 
 st.title("AI Bug Investigation Agent")
+
+# User se input lene ke liye
 user_input = st.text_input("Enter your bug description:")
 
 if st.button("Analyze"):
-    if user_input:
-        st.write("Analyzing...")
-        result = analyze_bug_with_ai(user_input)
-        st.write(result)
-    else:
-        st.warning("Please enter something!")
+    # Yahan woh logic call karein jo aapne 'agent' ya 'API' folder mein likha hai
+    st.write("Analyzing...")
+    # result = analyze_bug(user_input) 
+    st.write("Result yahan aayega")
