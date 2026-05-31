@@ -1,0 +1,15 @@
+import streamlit as st
+import requests
+
+st.title("AI Bug Investigation Agent")
+
+title = st.text_input("Bug Title")
+body = st.text_area("Bug Description")
+
+if st.button("Analyze"):
+    res = requests.post(
+        "http://localhost:8000/analyze",
+        json={"title": title, "body": body}
+    )
+
+    st.json(res.json())

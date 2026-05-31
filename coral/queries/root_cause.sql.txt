@@ -1,0 +1,10 @@
+-- root_cause.sql
+
+SELECT
+g.title,
+g.body,
+s.error_message,
+sl.text
+FROM github.issues g
+JOIN sentry.issues s
+JOIN slack.messages sl

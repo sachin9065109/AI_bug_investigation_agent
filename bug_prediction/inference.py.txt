@@ -1,0 +1,3 @@
+def predict_bug(title, body):
+    severity = "High"
+    return severity

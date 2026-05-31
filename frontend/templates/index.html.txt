@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Bug Investigation Agent</title>
+</head>
+<body>
+
+<h1>AI Bug Investigation Agent</h1>
+
+<input type="text" id="title" placeholder="Issue Title">
+
+<br><br>
+
+<textarea id="body" placeholder="Issue Description"></textarea>
+
+<br><br>
+
+<button onclick="analyzeBug()">Analyze</button>
+
+<div id="result"></div>
+
+<script src="/static/script.js"></script>
+
+</body>
+</html>

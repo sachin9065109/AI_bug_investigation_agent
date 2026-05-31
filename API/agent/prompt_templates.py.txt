@@ -1,0 +1,14 @@
+ROOT_CAUSE_PROMPT = """
+Analyze issue.
+
+Issue:
+{issue}
+
+Slack:
+{slack}
+
+Sentry:
+{sentry}
+
+Find root cause.
+"""

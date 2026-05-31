@@ -1,0 +1,18 @@
+from agent.bug_agent import predict_bug
+from agent.root_cause_agent import analyze_root_cause
+from coral.coral_client import CoralClient
+
+def run_agent(title, body):
+
+    bug = predict_bug(title, body)
+    
+    coral = CoralClient()
+    related = coral.search_related_issues(title)
+
+    root = analyze_root_cause(title, body)
+
+    return {
+        "bug_prediction": bug,
+        "related_issues": related,
+        "root_cause": root
+    }

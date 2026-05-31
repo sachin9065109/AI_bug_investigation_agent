@@ -1,0 +1,15 @@
+class CoralClient:
+
+    def search_related_issues(self, query):
+        return [
+            {
+                "issue": "Login API failing after deploy",
+                "repo": "backend-service",
+                "status": "open"
+            },
+            {
+                "issue": "DB connection timeout",
+                "repo": "auth-service",
+                "status": "closed"
+            }
+        ]
