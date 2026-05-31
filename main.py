@@ -1,74 +1,9 @@
-import streamlit as st
-import google.generativeai as genai
-import json
-import re
-from datetime import datetime
-
-# ─── Page Config ───────────────────────────────────────────────────────────────
-st.set_page_config(
-    page_title="AI Bug Investigation Agent",
-    page_icon="🔍",
-    layout="wide",
-)
-
-# ─── CSS Styling ───────────────────────────────────────────────────────────────
-st.markdown("""
-<style>
-    .stTabs [data-baseweb="tab-list"] { gap: 8px; }
-    .stTabs [data-baseweb="tab"] { padding: 8px 20px; border-radius: 8px; }
-    .feature-badge {
-        display: inline-block;
-        padding: 2px 10px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 600;
-        margin-bottom: 6px;
-    }
-    .badge-core    { background: #dbeafe; color: #1e40af; }
-    .badge-adv     { background: #fef3c7; color: #92400e; }
-    .badge-pro     { background: #fee2e2; color: #991b1b; }
-    .result-box {
-        background: #f8fafc;
-        border-left: 4px solid #6366f1;
-        border-radius: 8px;
-        padding: 16px;
-        margin: 12px 0;
-    }
-    .severity-critical { color: #dc2626; font-weight: 700; }
-    .severity-high     { color: #ea580c; font-weight: 700; }
-    .severity-medium   { color: #ca8a04; font-weight: 700; }
-    .severity-low      { color: #16a34a; font-weight: 700; }
-</style>
-""", unsafe_allow_html=True)
-
-# ─── Sidebar for API Key ───────────────────────────────────────────────────────
-with st.sidebar:
-    st.title("⚙️ Configuration")
-    api_key = st.text_input("Enter Google Gemini API Key:", type="password")
-    st.markdown("[Get Free API Key Here](https://aistudio.google.com/)")
-    if api_key:
-        genai.configure(api_key=api_key)
-    st.markdown("---")
-    st.caption("v1.0 — AI Bug Investigation Agent")
-
-# ─── Session State Init ────────────────────────────────────────────────────────
-if "bug_history"      not in st.session_state: st.session_state.bug_history      = []
-if "chat_messages"    not in st.session_state: st.session_state.chat_messages    = []
-if "debate_results"   not in st.session_state: st.session_state.debate_results   = []
-if "last_bug_context" not in st.session_state: st.session_state.last_bug_context = ""
-
-MODEL = "gemini-2.0-flash"
-
-# ─── Helper: Clean JSON ────────────────────────────────────────────────────────
-def clean_json(raw_text: str) -> str:
-    """Removes markdown code blocks if Gemini returns them around JSON."""
-    cleaned = re.sub(r"```(?:json)?", "", raw_text).replace("```", "").strip()
-    return cleaned
+return cleaned
 
 # ─── Helper: Call Gemini ──────────────────────────────────────────────────────
 def call_gemini(system_prompt: str, user_message: str) -> str:
     if not api_key:
-        st.warning("⚠️ Pehle sidebar mein API key daalo!")
+        st.warning("⚠️ Please enter your API key in the sidebar first!")
         return "API key missing."
     try:
         model = genai.GenerativeModel(
@@ -278,10 +213,10 @@ Help the user investigate and resolve their bug. Be precise, technical, and acti
 # UI – HEADER
 # ══════════════════════════════════════════════════════════════════════════════
 st.title("🔍 AI Bug Investigation Agent")
-st.caption("Powered by Google Gemini — Stack traces, git diffs, hypotheses, debates, aur zyada")
+st.caption("Powered by Google Gemini — Stack traces, git diffs, hypotheses, debates, and more")
 
 if not api_key:
-    st.info("👈 Sidebar mein apni Gemini API key daalo phir start karo.")
+    st.info("👈 Enter your Gemini API key in the sidebar to get started.")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # UI – TABS
@@ -350,7 +285,7 @@ with tab_main:
 with tab_stack:
     st.markdown('<span class="feature-badge badge-core">Core</span>', unsafe_allow_html=True)
     st.subheader("Stack Trace Analyzer")
-    st.caption("Error log ya stack trace paste karo — root cause nikalta hai")
+    st.caption("Paste an error log or stack trace — extracts the root cause")
     stack_lang  = st.selectbox("Language", ["Python","JavaScript","Java","Go","C#","Other"], key="stack_lang")
     stack_input = st.text_area("Paste stack trace / error log:", height=200,
         placeholder="Traceback (most recent call last):\n  File ...\nNullPointerException: ...")
@@ -375,7 +310,7 @@ with tab_stack:
 with tab_git:
     st.markdown('<span class="feature-badge badge-core">Core</span>', unsafe_allow_html=True)
     st.subheader("Git Diff Analyzer")
-    st.caption("Recent commit diff paste karo — kaunse change ne bug introduce kiya?")
+    st.caption("Paste recent commit diff — which change introduced the bug?")
     git_bug_desc = st.text_input("Bug description (optional):", key="git_bug")
     diff_input   = st.text_area("Paste git diff output:", height=250,
         placeholder="diff --git a/app.py b/app.py\n--- a/app.py\n+++ b/app.py\n@@ ...")
@@ -391,7 +326,7 @@ with tab_git:
 with tab_hypo:
     st.markdown('<span class="feature-badge badge-adv">Advanced</span>', unsafe_allow_html=True)
     st.subheader("Hypothesis Engine")
-    st.caption("4 alag theories generate karta hai confidence score ke saath")
+    st.caption("Generates 4 different theories with confidence scores")
     hypo_bug   = st.text_area("Bug description:", height=100, key="hypo_bug",
         value=st.session_state.last_bug_context)
     hypo_extra = st.text_input("Extra context (optional):",
@@ -416,7 +351,7 @@ with tab_hypo:
 with tab_cmds:
     st.markdown('<span class="feature-badge badge-adv">Advanced</span>', unsafe_allow_html=True)
     st.subheader("Auto Debug Commands")
-    st.caption("Kaunse commands run kare? Agent suggest karega purpose ke saath")
+    st.caption("Which commands to run? Agent suggests them with their purpose")
     cmd_bug   = st.text_area("Bug description:", height=80, key="cmd_bug",
         value=st.session_state.last_bug_context)
     cmd_stack = st.text_input("Tech stack:", placeholder="e.g. Django + PostgreSQL + Redis")
@@ -436,7 +371,7 @@ with tab_cmds:
 with tab_test:
     st.markdown('<span class="feature-badge badge-adv">Advanced</span>', unsafe_allow_html=True)
     st.subheader("Test Case Generator")
-    st.caption("Bug reproduce karne wala minimal unit test likhta hai")
+    st.caption("Writes a minimal unit test to reproduce the bug")
     test_bug  = st.text_area("Bug description:", height=80, key="test_bug",
         value=st.session_state.last_bug_context)
     test_lang = st.selectbox("Language", ["Python","JavaScript","Java","Go","C#"], key="test_lang2")
@@ -455,7 +390,7 @@ with tab_test:
 with tab_sev:
     st.markdown('<span class="feature-badge badge-adv">Advanced</span>', unsafe_allow_html=True)
     st.subheader("Severity Classifier")
-    st.caption("Bug ka impact aur urgency classify karta hai")
+    st.caption("Classifies the impact and urgency of the bug")
     sev_bug = st.text_area("Bug description:", height=100, key="sev_bug",
         value=st.session_state.last_bug_context)
     if st.button("Classify Severity", use_container_width=True):
@@ -479,7 +414,7 @@ with tab_sev:
 with tab_log:
     st.markdown('<span class="feature-badge badge-pro">Pro</span>', unsafe_allow_html=True)
     st.subheader("Log Watcher & Anomaly Detector")
-    st.caption("Logs paste karo — errors, warnings, aur patterns detect karta hai")
+    st.caption("Paste logs — detects errors, warnings, and patterns")
     log_input = st.text_area("Paste your logs here:", height=250,
         placeholder="2024-01-15 10:23:45 INFO  Starting server...\n2024-01-15 10:23:46 ERROR DB connection failed\n...")
     if st.button("🔎 Analyze Logs", use_container_width=True):
@@ -507,13 +442,13 @@ with tab_log:
 with tab_debate:
     st.markdown('<span class="feature-badge badge-pro">Pro</span>', unsafe_allow_html=True)
     st.subheader("Multi-Agent Debate")
-    st.caption("4 alag agents bug ke liye argue karte hain — judge decide karta hai winner")
-    st.warning("⏱️ Yeh feature 4 API calls karta hai — thoda time lagega (~20s)")
+    st.caption("4 different agents argue about the bug — a judge decides the winner")
+    st.warning("⏱️ This feature makes 4 API calls — it will take some time (~20s)")
     debate_bug = st.text_area("Bug description:", height=100, key="debate_bug",
         value=st.session_state.last_bug_context)
     if st.button("⚔️ Start Debate", use_container_width=True):
         if debate_bug.strip():
-            with st.spinner("4 agents debate kar rahe hain..."):
+            with st.spinner("4 agents are debating..."):
                 results, verdict = run_multi_agent_debate(debate_bug)
             agent_icons = {"Network Agent":"🌐","DB Agent":"🗄️","Logic Agent":"🧠","Config Agent":"⚙️"}
             cols = st.columns(2)
@@ -539,7 +474,7 @@ with tab_debate:
 with tab_report:
     st.markdown('<span class="feature-badge badge-pro">Pro</span>', unsafe_allow_html=True)
     st.subheader("Bug Report Writer")
-    st.caption("Professional GitHub/Jira-ready bug report auto-generate karta hai")
+    st.caption("Auto-generates a professional GitHub/Jira-ready bug report")
     rep_bug      = st.text_area("Bug description:", height=80, key="rep_bug",
         value=st.session_state.last_bug_context)
     rep_analysis = st.text_area("Analysis / findings (optional):", height=80,
@@ -561,7 +496,7 @@ with tab_report:
 with tab_chat:
     st.markdown('<span class="feature-badge badge-pro">Pro</span>', unsafe_allow_html=True)
     st.subheader("Chat with Bug Agent")
-    st.caption("Bug context ke saath interactive conversation")
+    st.caption("Interactive conversation with bug context")
     chat_ctx = st.text_area("Bug context (auto-filled from Main tab):",
         value=st.session_state.last_bug_context, height=60, key="chat_ctx")
     for msg in st.session_state.chat_messages:
@@ -584,9 +519,9 @@ with tab_chat:
 with tab_hist:
     st.markdown('<span class="feature-badge badge-core">Core</span>', unsafe_allow_html=True)
     st.subheader("Bug History & Memory")
-    st.caption("Is session mein investigate kiye gaye saare bugs")
+    st.caption("All bugs investigated in this session")
     if not st.session_state.bug_history:
-        st.info("Abhi koi bug investigate nahi kiya. Main tab se start karo!")
+        st.info("No bugs investigated yet. Start from the Main tab!")
     else:
         for bug in reversed(st.session_state.bug_history):
             with st.expander(f"[{bug['timestamp']}] {bug['description']}"):
