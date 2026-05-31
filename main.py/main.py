@@ -1,8 +1,0 @@
-from fastapi import FastAPI
-from api.routes import router
-
-app = FastAPI(
-    title="AI Bug Investigation Agent"
-)
-
-app.include_router(router)
